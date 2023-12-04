@@ -20,7 +20,6 @@ build:
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
 
   script:
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_NATIVE=on"
     - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=on"                                 # [cuda_compiler_version != "None"]
     - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_ACCELERATE=on -DLLAMA_METAL=on"            # [osx]
     - cmake -S . -B build -G Ninja
