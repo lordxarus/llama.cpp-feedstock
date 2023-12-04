@@ -13,17 +13,15 @@ source:
 
 build:
   skip: True  # [win]
-  skip: True  # [osx]
   skip: True  # [linux and cuda_compiler_version == "None"]
-  number: 2
+  number: 3
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
 
   script:
     - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_TESTS=OFF"
     - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_EXAMPLES=OFF"
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                                 # [cuda_compiler_version != "None"]
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_ACCELERATE=ON -DLLAMA_METAL=ON"            # [osx]
+    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                                                  # [cuda_compiler_version != "None"]
     - cmake -S . -B build -G Ninja
     - cmake --build build --config Release
     - cmake --install build --prefix={{ PREFIX }}
