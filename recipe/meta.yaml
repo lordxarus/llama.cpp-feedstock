@@ -15,15 +15,16 @@ build:
   skip: True  # [win]
   skip: True  # [osx]
   skip: True  # [linux and cuda_compiler_version == "None"]
-  number: 1
+  number: 2
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
 
   script:
-    - CMAKE_LLAMA_ARGS="-DLLAMA_NATIVE=on"
-    - CMAKE_LLAMA_ARGS="${CMAKE_LLAMA_ARGS} -DLLAMA_CUBLAS=on"                                 # [cuda_compiler_version != "None"]
-    - CMAKE_LLAMA_ARGS="${CMAKE_LLAMA_ARGS} -DLLAMA_ACCELERATE=on -DLLAMA_METAL=on"            # [osx]
-    - cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH={{ PREFIX }} ${CMAKE_LLAMA_ARGS}
+    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_TESTS=OFF"
+    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_EXAMPLES=OFF"
+    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                                 # [cuda_compiler_version != "None"]
+    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_ACCELERATE=ON -DLLAMA_METAL=ON"            # [osx]
+    - cmake -S . -B build -G Ninja
     - cmake --build build --config Release
     - cmake --install build --prefix={{ PREFIX }}
 
@@ -35,11 +36,10 @@ requirements:
     - cmake
     - git
     - ninja
-    - macosx_deployment_target_osx-64 {{ MACOSX_DEPLOYMENT_TARGET }}  # [osx and x86_64]
+  host:
+    - libcublas-dev  # [(cuda_compiler_version or "").startswith("12")]
   run:
-    # llama.cpp *really* depends on the version it compiled against
-    - cudatoolkit {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
-    - macosx_deployment_target_osx-64 >={{ MACOSX_DEPLOYMENT_TARGET }}  # [osx and x86_64]
+    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
 
 test:
   commands:
