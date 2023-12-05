@@ -59,7 +59,7 @@ requirements:
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
     - cuda-cudart  {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
-    - cuda_cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
+    - cuda-cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
 
 test:
   commands:
