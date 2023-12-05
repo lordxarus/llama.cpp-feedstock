@@ -14,7 +14,7 @@ source:
 build:
   skip: True  # [win]
   skip: True  # [linux and cuda_compiler_version == "None"]
-  number: 3
+  number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
   string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
