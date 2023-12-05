@@ -14,6 +14,7 @@ source:
 build:
   skip: True  # [(linux or win) and cuda_compiler_version == "None"]
   skip: True  # [linux or osx]  # Save CI/CD Cycles
+  skip: True  # [win and cuda_compiler_version != "12.0"]  # Save CI/CD Cycles
   number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
@@ -58,6 +59,7 @@ requirements:
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
     - cuda-cudart  {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
+    - cuda_cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
 
 test:
   commands:
