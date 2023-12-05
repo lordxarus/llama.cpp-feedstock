@@ -19,9 +19,14 @@ build:
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
 
   script:
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                                               # [linux and cuda_compiler_version != "None"]
-    - set CMAKE_ARGS="%CMAKE_ARGS% -DLLAMA_CUBLAS=ON"                                            # [win and cuda_compiler_version != "None"]
-    - cmake -S . -B build -G Ninja
+    {% macro append_cmake_args(value) -%}
+    - export CMAKE_ARGS="%{CMAKE_ARGS} {{ value }}"     # [unix]
+    - set CMAKE_ARGS="%CMAKE_ARGS% {{ value }}"         # [win]
+    {%- endmacro %}
+    {{ append_cmake_args("-DLLAMA_NATIVE=OFF -DBUILD_SHARED_LIBS=ON") }}  # [win]
+    {{ append_cmake_args("-DLLAMA_CUBLAS=ON") }}                          # [cuda_compiler_version != "None"]
+    - cmake -S . -B build -G Ninja  # [unix]
+    - cmake -S . -B build           # [win]
     - cmake --build build --config Release
     - cmake --install build --prefix={{ PREFIX }}
 
@@ -34,7 +39,8 @@ requirements:
     - git
     - ninja
   host:
-    - libcublas-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cuarg-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - libcublas-dev   # [(cuda_compiler_version or "").startswith("12")]
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
 
