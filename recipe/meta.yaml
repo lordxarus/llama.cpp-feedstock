@@ -14,19 +14,28 @@ source:
 build:
   skip: True  # [(linux or win) and cuda_compiler_version == "None"]
   skip: True  # [linux or osx]  # Save CI/CD Cycles
-  number: 3
+  number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
+  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
 
   script:
-    {% macro append_cmake_args(value) -%}
-    - export CMAKE_ARGS="%{CMAKE_ARGS} {{ value }}"     # [unix]
-    - set CMAKE_ARGS="%CMAKE_ARGS% {{ value }}"         # [win]
+    {% macro llama_args(value) -%}
+    - LLAMA_ARGS="${LLAMA_ARGS:-} -DLLAMA_{{ value }}"   # [unix]
+    - set LLAMA_ARGS="%LLAMA_ARGS% -DLLAMA_{{ value }}"  # [win]
     {%- endmacro %}
-    {{ append_cmake_args("-DLLAMA_NATIVE=OFF -DBUILD_SHARED_LIBS=ON") }}  # [win]
-    {{ append_cmake_args("-DLLAMA_CUBLAS=ON") }}                          # [cuda_compiler_version != "None"]
-    - cmake -S . -B build -G Ninja  # [unix]
-    - cmake -S . -B build           # [win]
+    {{ llama_args("BUILD_TESTS=OFF") }}
+    {{ llama_args("BUILD_SHARED_LIBS=ON") }}  # [win]
+    {{ llama_args("NATIVE=OFF") }}      # [(osx and arm64) or win]
+    {{ llama_args("AVX=OFF") }}         # [osx and arm64]
+    {{ llama_args("AVX2=OFF") }}        # [osx and arm64]
+    {{ llama_args("FMA=OFF") }}         # [osx and arm64]
+    {{ llama_args("F16C=OFF") }}        # [osx and arm64]
+    {{ llama_args("ACCELERATE=ON") }}   # [osx]
+    {{ llama_args("METAL=ON") }}        # [osx]
+    {{ llama_args("CUBLAS=ON") }}       # [cuda_compiler_version != "None"]
+    - cmake -S . -B build -G Ninja %LLAMA_ARGS%   # [win]
+    - cmake -S . -B build -G Ninja ${LLAMA_ARGS}  # [unix]
     - cmake --build build --config Release
     - cmake --install build --prefix={{ PREFIX }}
 
@@ -39,8 +48,8 @@ requirements:
     - git
     - ninja
   host:
-    - cuda-cuart-dev  # [(cuda_compiler_version or "").startswith("12")]
-    - libcublas-dev   # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - libcublas-dev    # [(cuda_compiler_version or "").startswith("12")]
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
 
