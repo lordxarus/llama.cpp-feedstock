@@ -14,15 +14,25 @@ source:
 build:
   skip: True  # [win]
   skip: True  # [linux and cuda_compiler_version == "None"]
-  number: 3
+  number: 4
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [cuda_compiler_version == "None"]
+  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
 
   script:
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_TESTS=OFF"
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_BUILD_EXAMPLES=OFF"
-    - CMAKE_ARGS="${CMAKE_ARGS} -DLLAMA_CUBLAS=ON"                                                  # [cuda_compiler_version != "None"]
-    - cmake -S . -B build -G Ninja
+    {% macro llama_args(value) -%}
+    - LLAMA_ARGS="${LLAMA_ARGS:-} -DLLAMA_{{ value }}"
+    {%- endmacro %}
+    {{ llama_args("BUILD_TESTS=OFF") }}
+    {{ llama_args("NATIVE=OFF") }}      # [osx and arm64]
+    {{ llama_args("AVX=OFF") }}         # [osx and arm64]
+    {{ llama_args("AVX2=OFF") }}        # [osx and arm64]
+    {{ llama_args("FMA=OFF") }}         # [osx and arm64]
+    {{ llama_args("F16C=OFF") }}        # [osx and arm64]
+    {{ llama_args("ACCELERATE=ON") }}   # [osx]
+    {{ llama_args("METAL=ON") }}        # [osx]
+    {{ llama_args("CUBLAS=ON") }}       # [cuda_compiler_version != "None"]
+    - cmake -S . -B build -G Ninja ${LLAMA_ARGS}
     - cmake --build build --config Release
     - cmake --install build --prefix={{ PREFIX }}
 
@@ -35,7 +45,8 @@ requirements:
     - git
     - ninja
   host:
-    - libcublas-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - libcublas-dev    # [(cuda_compiler_version or "").startswith("12")]
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
 
