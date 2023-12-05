@@ -39,7 +39,7 @@ requirements:
     - git
     - ninja
   host:
-    - cuda-cuarg-dev  # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cuart-dev  # [(cuda_compiler_version or "").startswith("12")]
     - libcublas-dev   # [(cuda_compiler_version or "").startswith("12")]
   run:
     - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None"]
