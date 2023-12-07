@@ -35,8 +35,8 @@ build:
     {{ llama_args("METAL=ON") }}        # [osx]
     {{ llama_args("CUBLAS=ON") }}       # [cuda_compiler_version != "None"]
 
-    {{ llama_args("BLAS=ON") }}                   # [not osx and cuda_compiler_version == "None"]
-    {{ llama_args("BLAS_VENDOR=Intel10_64lp") }}  # [blas_impl == "mkl"]
+    {{ llama_args("BLAS=ON") }}                        # [not osx and cuda_compiler_version == "None"]
+    {{ llama_args("BLAS_VENDOR=Intel10_64_dyn") }}     # [blas_impl == "mkl"]
 
     - echo $LLAMA_ARGS  # [unix]
     - set LLAMA_ARGS    # [win]
