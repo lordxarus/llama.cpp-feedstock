@@ -14,7 +14,7 @@ source:
 
 build:
   number: 8
-  skip: True  # [not (win and cuda_compiler_version == "None")]
+  skip: True  # [not ((win or linux) and cuda_compiler_version == "None")]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
   string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
@@ -31,7 +31,7 @@ build:
     - set LLAMA_ARGS=%LLAMA_ARGS% -D{{ value }}         # [win]
     {%- endmacro %}
 
-    {{ cmake_args("BUILD_SHARED_LIBS=ON") }}  # [win]
+    {{ cmake_args("BUILD_SHARED_LIBS=ON") }}
 
     {{ llama_args("NATIVE=OFF") }}      # [(osx and arm64) or win]
     {{ llama_args("AVX=OFF") }}         # [osx and arm64]
@@ -48,11 +48,10 @@ build:
     - echo $LLAMA_ARGS  # [unix]
     - set LLAMA_ARGS    # [win]
 
-    - cmake -S . -B build %LLAMA_ARGS%            # [win]
-    - cmake -S . -B build -G Ninja ${LLAMA_ARGS}  # [unix]
-    - cmake --build build --config Release
-    - cmake --install build --prefix={{ PREFIX }}
-    - cmake --install build  # [win]
+    - cmake -S . -B build -G Ninja %CMAKE_ARGS% %LLAMA_ARGS%    # [win]
+    - cmake -S . -B build -G Ninja ${CMAKE_ARGS} ${LLAMA_ARGS}  # [unix]
+    - cmake --build build
+    - cmake --install build 
 
 requirements:
   build:
