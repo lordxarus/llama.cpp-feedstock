@@ -1,5 +1,5 @@
 blas_impl:
-- openblas
+- mkl
 c_compiler:
 - vs2019
 channel_sources:
@@ -12,6 +12,8 @@ cuda_compiler_version:
 - '11.2'
 cxx_compiler:
 - vs2019
+mkl:
+- '2023'
 target_platform:
 - win-64
 zip_keys:
