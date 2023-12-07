@@ -68,7 +68,8 @@ requirements:
     - cuda-cudart  {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
     - cuda-cudart_{{ target_platform }} {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12") and win]
 
-    - llvm-openmp                    # [blas_impl == "mkl"]
+    - llvm-openmp                    # [linux and blas_impl == "mkl"]
+    - intel-openmp                   # [win and blas_impl == "mkl"]
 
 test:
   commands:
