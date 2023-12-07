@@ -55,6 +55,8 @@ requirements:
     - cmake
     - git
     - ninja
+    # Required to find mkl on windows
+    - pkgconfig  # [win and blas_impl == "mkl"]
   host:
     - cuda-cudart-dev  # [(cuda_compiler_version or "").startswith("12")]
     - libcublas-dev    # [(cuda_compiler_version or "").startswith("12")]
