@@ -14,6 +14,7 @@ source:
 
 build:
   number: 8
+  skip: True  # [not (win and cuda_compiler_version == "None")]
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [not osx and cuda_compiler_version == "None"]
   string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx]
