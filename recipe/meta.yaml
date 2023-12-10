@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/ggerganov/llama.cpp/archive/b{{ version }}.tar.gz
-  sha256: 829f7c3696fb9da15faf0b70e7d33a174d3de5111ac797511ca0974eb42cf572
+  sha256: 420e0050ab7c1893042141339a2e8b088e32f8fc1769dad9041762d958dda985
   patches:
     - osx-64-pick-discrete.patch  # [osx]
     - mkl.patch                   # [blas_impl == "mkl"]
