@@ -1,5 +1,5 @@
 {% set name = "llama.cpp" %}
-{% set version = "0.0.1621" %}
+{% set version = "0.0.1627" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/ggerganov/llama.cpp/archive/b{{ version.split(".")[-1] }}.tar.gz
-  sha256: f912087be89798a42d42ee9fd1dedfb8b0fe232e9101acf338e7a09269b77788
+  sha256: fd3515ebaccd75104edcd67699bf40f0e09c509cb0b7ce05e99dd7013c96ae96
   patches:
     - osx-64-pick-discrete.patch  # [osx]
     - mkl.patch                   # [blas_impl == "mkl"]
@@ -15,8 +15,8 @@ source:
 build:
   number: 0
   string: cuda{{ cuda_compiler_version | replace('.', '') }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}  # [cuda_compiler_version != "None"]
-  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx and arm64]
   string: cpu_{{ blas_impl }}_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                 # [(osx and x86_64) or cuda_compiler_version == "None"]
+  string: mps_h{{ PKG_HASH }}_{{ PKG_BUILDNUM }}                                                 # [osx and arm64]
 
   script:
     - LLAMA_ARGS="-DLLAMA_BUILD_TESTS=OFF"              # [unix]
