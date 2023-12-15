@@ -71,7 +71,7 @@ requirements:
     - blas-devel * *{{ blas_impl }}  # [blas_impl == "mkl"]
     - mkl-devel {{ mkl }}            # [blas_impl == "mkl"]
   run:
-    - cuda-version {{ cuda_compiler_version }}  # [not cuda_compiler_version.startswith("12")]
+    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version not in (undefined, "None", "12")]
 
     - llvm-openmp                    # [linux and blas_impl == "mkl"]
 
