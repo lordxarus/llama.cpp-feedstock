@@ -1,5 +1,5 @@
 {% set name = "llama.cpp" %}
-{% set version = "0.0.1627" %}
+{% set version = "0.0.1641" %}
 
 package:
   name: {{ name|lower }}
@@ -7,7 +7,7 @@ package:
 
 source:
   url: https://github.com/ggerganov/llama.cpp/archive/b{{ version.split(".")[-1] }}.tar.gz
-  sha256: fd3515ebaccd75104edcd67699bf40f0e09c509cb0b7ce05e99dd7013c96ae96
+  sha256: 8316dfaa8988c444c43ecdcfee535bc6f7c2a7f6ed1c01da45927483ead801b2
   patches:
     - osx-64-pick-discrete.patch  # [osx]
     - mkl.patch                   # [blas_impl == "mkl"]
