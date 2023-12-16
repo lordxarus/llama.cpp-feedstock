@@ -45,7 +45,7 @@ build:
     {{ cmake_args("CMAKE_CUDA_ARCHITECTURES=all")}}  # [cuda_compiler_version != "None"]
 
     {{ llama_args("BLAS=ON") }}                     # [not osx and cuda_compiler_version == "None"]
-    {{ llama_args("BLAS_VENDOR=Intel10_64_dyn") }}  # [blas_impl == "mkl"]
+    {{ llama_args("BLAS_VENDOR=Intel10_64_dyn") }}  # [not osx and cuda_compiler_version == "None" and blas_impl == "mkl"]
 
     - echo $LLAMA_ARGS  # [unix]
     - set LLAMA_ARGS    # [win]
@@ -68,12 +68,12 @@ requirements:
     - cuda-cudart-dev  {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
     - libcublas-dev    {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
 
-    - blas-devel * *{{ blas_impl }}                 # [blas_impl == "mkl"]
-    - mkl-devel {{ mkl }}                           # [blas_impl == "mkl"]
+    - blas-devel * *{{ blas_impl }}                 # [not osx and cuda_compiler_version == "None" and blas_impl == "mkl"]
+    - mkl-devel {{ mkl }}                           # [not osx and cuda_compiler_version == "None" and blas_impl == "mkl"]
   run:
     - cuda-version {{ cuda_compiler_version }}      # [cuda_compiler_version != "None" and not (cuda_compiler_version or "").startswith("12")]
 
-    - llvm-openmp                                   # [linux and blas_impl == "mkl"]
+    - llvm-openmp                                   # [linux and cuda_compiler_version == "None" and blas_impl == "mkl"]
 
 test:
   commands:
