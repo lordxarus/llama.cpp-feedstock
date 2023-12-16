@@ -57,22 +57,21 @@ requirements:
   build:
     - {{ compiler('c') }}
     - {{ compiler('cxx') }}
-    - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
+    - {{ compiler('cuda') }}                        # [cuda_compiler_version != "None"]
     - cmake
     - git
     - ninja
-    # Required to find mkl on windows
-    - pkgconfig  # [win and blas_impl == "mkl"]
+    - pkgconfig
   host:
-    - cuda-cudart-dev  # [(cuda_compiler_version or "").startswith("12")]
-    - libcublas-dev    # [(cuda_compiler_version or "").startswith("12")]
+    - cuda-cudart-dev  {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
+    - libcublas-dev    {{ cuda_compiler_version }}  # [(cuda_compiler_version or "").startswith("12")]
 
-    - blas-devel * *{{ blas_impl }}  # [blas_impl == "mkl"]
-    - mkl-devel {{ mkl }}            # [blas_impl == "mkl"]
+    - blas-devel * *{{ blas_impl }}                 # [blas_impl == "mkl"]
+    - mkl-devel {{ mkl }}                           # [blas_impl == "mkl"]
   run:
-    - cuda-version {{ cuda_compiler_version }}  # [cuda_compiler_version != "None" and not (cuda_compiler_version or "").startswith("12")]
+    - cuda-version {{ cuda_compiler_version }}      # [cuda_compiler_version != "None" and not (cuda_compiler_version or "").startswith("12")]
 
-    - llvm-openmp                    # [linux and blas_impl == "mkl"]
+    - llvm-openmp                                   # [linux and blas_impl == "mkl"]
 
 test:
   commands:
