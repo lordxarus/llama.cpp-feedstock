@@ -41,8 +41,8 @@ build:
     {{ llama_args("METAL=OFF") }}       # [osx and x86_64]
     {{ llama_args("ACCELERATE=ON") }}   # [osx]
 
-    {{ llama_args("CUBLAS=ON") }}                    # [cuda_compiler_version != "None"]
-    {{ cmake_args("CMAKE_CUDA_ARCHITECTURES=all")}}  # [cuda_compiler_version != "None"]
+    {{ llama_args("CUBLAS=ON") }}                     # [cuda_compiler_version != "None"]
+    {{ cmake_args("CMAKE_CUDA_ARCHITECTURES=all") }}  # [cuda_compiler_version != "None"]
 
     {{ llama_args("BLAS=ON") }}                     # [not osx and cuda_compiler_version == "None"]
     {{ llama_args("BLAS_VENDOR=Intel10_64_dyn") }}  # [not osx and cuda_compiler_version == "None" and blas_impl == "mkl"]
