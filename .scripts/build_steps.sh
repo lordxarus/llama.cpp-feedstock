@@ -8,7 +8,7 @@
 # -*- mode: jinja-shell -*-
 
 set -xeuo pipefail
-export FEEDSTOCK_ROOT="${FEEDSTOCK_ROOT:-/home/conda/feedstock_root}"
+export FEEDSTOCK_ROOT="${HOME}/feedstock_root"
 source ${FEEDSTOCK_ROOT}/.scripts/logging_utils.sh
 
 
@@ -17,7 +17,7 @@ source ${FEEDSTOCK_ROOT}/.scripts/logging_utils.sh
 ( startgroup "Configuring conda" ) 2> /dev/null
 
 export PYTHONUNBUFFERED=1
-export RECIPE_ROOT="${RECIPE_ROOT:-/home/conda/recipe_root}"
+export RECIPE_ROOT="${FEEDSTOCK_ROOT}/recipe"
 export CI_SUPPORT="${FEEDSTOCK_ROOT}/.ci_support"
 export CONFIG_FILE="${CI_SUPPORT}/${CONFIG}.yaml"
 
